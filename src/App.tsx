@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
-import { StudentsCreateForm } from '../ui-components';
+import FormWorkflow from "./FormWorkFlow"; // Correct import for default export
+
 
 const client = generateClient<Schema>();
 
@@ -21,36 +22,43 @@ function App() {
 
   return (
     <Router>
-    <main>
-      <h1>My todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            {todo.content}
-          </li>
-        ))}
-      </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
-      </div>
-      <div>
-        {/* Add a button to navigate to the form */}
-        <Link to="/StudentsCreateFormProps">
-          <button>Go to Form</button>
-        </Link>
-      </div>
+      <main>
+        <h1>My todos</h1>
+        <button onClick={createTodo}>+ new</button>
+        <ul>
+          {todos.map((todo) => (
+            <li key={todo.id}>{todo.content}</li>
+          ))}
+        </ul>
+        <div>
+          🥳 App successfully hosted. Try creating a new todo.
+          <br />
+          <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
+            Review next step of this tutorial.
+          </a>
+        </div>
 
-      {/* Define routes */}
-      <Routes>
-        <Route path="/StudentsCreateFormProps" element={<StudentsCreateForm />} />
-      </Routes>
-    </main>
-  </Router>
+        <div>
+          {/* Add a button to navigate to the forms */}
+          <Link to="/create-forms">
+            <button>Go to All Forms</button>
+          </Link>
+        </div>
+
+        {/* Define routes */}
+        <Routes>
+          <Route
+            path="/create-forms"
+            element={
+              <div>
+                <h2>Create Forms</h2>
+                <FormWorkflow />
+              </div>
+            }
+          />
+        </Routes>
+      </main>
+    </Router>
   );
 }
 
