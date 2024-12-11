@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
+import { StudentsCreateForm } from '../ui-components';
 
 const client = generateClient<Schema>();
 
@@ -18,12 +20,15 @@ function App() {
   }
 
   return (
+    <Router>
     <main>
       <h1>My todos</h1>
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+          <li key={todo.id}>
+            {todo.content}
+          </li>
         ))}
       </ul>
       <div>
@@ -33,7 +38,19 @@ function App() {
           Review next step of this tutorial.
         </a>
       </div>
+      <div>
+        {/* Add a button to navigate to the form */}
+        <Link to="/StudentsCreateFormProps">
+          <button>Go to Form</button>
+        </Link>
+      </div>
+
+      {/* Define routes */}
+      <Routes>
+        <Route path="/StudentsCreateFormProps" element={<StudentsCreateForm />} />
+      </Routes>
     </main>
+  </Router>
   );
 }
 

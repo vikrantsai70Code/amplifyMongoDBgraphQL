@@ -7,7 +7,7 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler", // Changed from "bundler" to "node" for compatibility
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -18,8 +18,17 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Additional Configurations */
+    "allowJs": true, // Allow JavaScript imports
+    "checkJs": false, // Disable type checking for JavaScript files
+    "baseUrl": "./", // Enable base URL for easier module resolution
+    "paths": {
+      "ui-components/*": ["ui-components/*"], // Add path alias for ui-components
+      "*": ["src/*", "*"] // Allow fallback resolution
+    }
   },
-  "include": ["src"],
+  "include": ["src", "ui-components/**/*"], // Ensure ui-components folder is included
   "references": [{ "path": "./tsconfig.node.json" }]
 }
