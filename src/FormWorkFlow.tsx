@@ -10,7 +10,7 @@ import {
   AppealsCreateForm,
 } from "../ui-components"; // Adjust the path as necessary
 
-function FormWorkflow() {
+function FormWorkFlow() {
   const [currentFormIndex, setCurrentFormIndex] = useState(0);
 
   // Array of form components and their names
@@ -54,4 +54,4 @@ function FormWorkflow() {
 }
 
 // Default export
-export default FormWorkflow;
+export default FormWorkFlow;

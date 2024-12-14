@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
-import FormWorkflow from "FormWorkFlow";
+import FormWorkFlow from "./FormWorkFlow";
 
 const client = generateClient<Schema>();
 
@@ -47,7 +47,7 @@ function App() {
 
       {/* Define routes */}
       <Routes>
-        <Route path="/StudentsCreateFormProps" element={<FormWorkflow />} />
+        <Route path="/StudentsCreateFormProps" element={<FormWorkFlow />} />
       </Routes>
     </main>
   </Router>
