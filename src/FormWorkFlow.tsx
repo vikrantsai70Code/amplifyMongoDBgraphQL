@@ -26,6 +26,8 @@ function FormWorkflow() {
   ];
 
   const handleSuccess = () => {
+    console.log(React.version);
+
     if (currentFormIndex < forms.length - 1) {
       setCurrentFormIndex((prevIndex) => prevIndex + 1); // Move to the next form
     } else {
