@@ -19,6 +19,8 @@ declare module 'ui-components' {
     export const DisbursementUpdateForm: ComponentType<any>;
     export const AppealsCreateForm: ComponentType<any>;
     export const AppealsUpdateForm: ComponentType<any>;
+    export const Dashboard: ComponentType<any> ;
+
 
 
     // Add other exports as needed

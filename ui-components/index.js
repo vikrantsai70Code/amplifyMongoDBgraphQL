@@ -16,3 +16,4 @@ export { default as DisbursementCreateForm } from "./DisbursementCreateForm";
 export { default as DisbursementUpdateForm } from "./DisbursementUpdateForm";
 export { default as AppealsCreateForm } from "./AppealsCreateForm";
 export { default as AppealsUpdateForm } from "./AppealsUpdateForm";
+export { default as Dashboard } from "./Dashboard";

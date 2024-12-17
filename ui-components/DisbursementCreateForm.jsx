@@ -5,7 +5,9 @@ import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createDisbursement } from "./graphql/mutations";
+
 const client = generateClient();
+
 export default function DisbursementCreateForm(props) {
   const {
     clearOnSuccess = true,
@@ -17,6 +19,7 @@ export default function DisbursementCreateForm(props) {
     overrides,
     ...rest
   } = props;
+
   const initialValues = {
     disbursementId: "",
     fafsaId: "",
@@ -24,28 +27,16 @@ export default function DisbursementCreateForm(props) {
     disbursementRecords: "",
     bankingDetails: "",
   };
-  const [disbursementId, setDisbursementId] = React.useState(
-    initialValues.disbursementId
-  );
-  const [fafsaId, setFafsaId] = React.useState(initialValues.fafsaId);
-  const [paymentSchedule, setPaymentSchedule] = React.useState(
-    initialValues.paymentSchedule
-  );
-  const [disbursementRecords, setDisbursementRecords] = React.useState(
-    initialValues.disbursementRecords
-  );
-  const [bankingDetails, setBankingDetails] = React.useState(
-    initialValues.bankingDetails
-  );
+
+  const [formValues, setFormValues] = React.useState(initialValues);
   const [errors, setErrors] = React.useState({});
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
   const resetStateValues = () => {
-    setDisbursementId(initialValues.disbursementId);
-    setFafsaId(initialValues.fafsaId);
-    setPaymentSchedule(initialValues.paymentSchedule);
-    setDisbursementRecords(initialValues.disbursementRecords);
-    setBankingDetails(initialValues.bankingDetails);
+    setFormValues(initialValues);
     setErrors({});
   };
+
   const validations = {
     disbursementId: [],
     fafsaId: [],
@@ -53,258 +44,146 @@ export default function DisbursementCreateForm(props) {
     disbursementRecords: [],
     bankingDetails: [],
   };
-  const runValidationTasks = async (
-    fieldName,
-    currentValue,
-    getDisplayValue
-  ) => {
-    const value =
-      currentValue && getDisplayValue
-        ? getDisplayValue(currentValue)
-        : currentValue;
+
+  const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
       validationResponse = await customValidator(value, validationResponse);
     }
-    setErrors((errors) => ({ ...errors, [fieldName]: validationResponse }));
+    setErrors((prevErrors) => ({ ...prevErrors, [fieldName]: validationResponse }));
     return validationResponse;
   };
+
+  const handleChange = (fieldName) => (e) => {
+    const value = e.target.value;
+    setFormValues((prev) => ({ ...prev, [fieldName]: value }));
+    if (errors[fieldName]?.hasError) {
+      runValidationTasks(fieldName, value);
+    }
+    onChange?.({ ...formValues, [fieldName]: value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    const validationResponses = await Promise.all(
+      Object.keys(validations).map((fieldName) =>
+        runValidationTasks(fieldName, formValues[fieldName])
+      )
+    );
+
+    if (validationResponses.some((res) => res.hasError)) {
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (onSubmit) {
+      onSubmit(formValues);
+    }
+
+    try {
+      const input = { ...formValues };
+
+      await client.graphql({
+        query: createDisbursement,
+        variables: { input },
+      });
+
+      if (onSuccess) {
+        onSuccess(formValues);
+      }
+
+      if (clearOnSuccess) {
+        resetStateValues();
+      }
+    } catch (err) {
+      onError?.(formValues, err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <Grid
-      as="form"
-      rowGap="15px"
-      columnGap="15px"
-      padding="20px"
-      onSubmit={async (event) => {
-        event.preventDefault();
-        let modelFields = {
-          disbursementId,
-          fafsaId,
-          paymentSchedule,
-          disbursementRecords,
-          bankingDetails,
-        };
-        const validationResponses = await Promise.all(
-          Object.keys(validations).reduce((promises, fieldName) => {
-            if (Array.isArray(modelFields[fieldName])) {
-              promises.push(
-                ...modelFields[fieldName].map((item) =>
-                  runValidationTasks(fieldName, item)
-                )
-              );
-              return promises;
-            }
-            promises.push(
-              runValidationTasks(fieldName, modelFields[fieldName])
-            );
-            return promises;
-          }, [])
-        );
-        if (validationResponses.some((r) => r.hasError)) {
-          return;
-        }
-        if (onSubmit) {
-          modelFields = onSubmit(modelFields);
-        }
-        try {
-          Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value === "") {
-              modelFields[key] = null;
-            }
-          });
-          await client.graphql({
-            query: createDisbursement.replaceAll("__typename", ""),
-            variables: {
-              input: {
-                ...modelFields,
-              },
-            },
-          });
-          if (onSuccess) {
-            onSuccess(modelFields);
-          }
-          if (clearOnSuccess) {
-            resetStateValues();
-          }
-        } catch (err) {
-          if (onError) {
-            const messages = err.errors.map((e) => e.message).join("\n");
-            onError(modelFields, messages);
-          }
-        }
+    <div
+      style={{
+        position: "relative",
+        padding: "20px",
+        borderRadius: "8px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        background: "linear-gradient(to bottom right, #ffffff, #f4f4f4)",
       }}
-      {...getOverrideProps(overrides, "DisbursementCreateForm")}
-      {...rest}
     >
-      <TextField
-        label="Disbursement id"
-        isRequired={false}
-        isReadOnly={false}
-        value={disbursementId}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              disbursementId: value,
-              fafsaId,
-              paymentSchedule,
-              disbursementRecords,
-              bankingDetails,
-            };
-            const result = onChange(modelFields);
-            value = result?.disbursementId ?? value;
-          }
-          if (errors.disbursementId?.hasError) {
-            runValidationTasks("disbursementId", value);
-          }
-          setDisbursementId(value);
-        }}
-        onBlur={() => runValidationTasks("disbursementId", disbursementId)}
-        errorMessage={errors.disbursementId?.errorMessage}
-        hasError={errors.disbursementId?.hasError}
-        {...getOverrideProps(overrides, "disbursementId")}
-      ></TextField>
-      <TextField
-        label="Fafsa id"
-        isRequired={false}
-        isReadOnly={false}
-        value={fafsaId}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              disbursementId,
-              fafsaId: value,
-              paymentSchedule,
-              disbursementRecords,
-              bankingDetails,
-            };
-            const result = onChange(modelFields);
-            value = result?.fafsaId ?? value;
-          }
-          if (errors.fafsaId?.hasError) {
-            runValidationTasks("fafsaId", value);
-          }
-          setFafsaId(value);
-        }}
-        onBlur={() => runValidationTasks("fafsaId", fafsaId)}
-        errorMessage={errors.fafsaId?.errorMessage}
-        hasError={errors.fafsaId?.hasError}
-        {...getOverrideProps(overrides, "fafsaId")}
-      ></TextField>
-      <TextField
-        label="Payment schedule"
-        isRequired={false}
-        isReadOnly={false}
-        value={paymentSchedule}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              disbursementId,
-              fafsaId,
-              paymentSchedule: value,
-              disbursementRecords,
-              bankingDetails,
-            };
-            const result = onChange(modelFields);
-            value = result?.paymentSchedule ?? value;
-          }
-          if (errors.paymentSchedule?.hasError) {
-            runValidationTasks("paymentSchedule", value);
-          }
-          setPaymentSchedule(value);
-        }}
-        onBlur={() => runValidationTasks("paymentSchedule", paymentSchedule)}
-        errorMessage={errors.paymentSchedule?.errorMessage}
-        hasError={errors.paymentSchedule?.hasError}
-        {...getOverrideProps(overrides, "paymentSchedule")}
-      ></TextField>
-      <TextField
-        label="Disbursement records"
-        isRequired={false}
-        isReadOnly={false}
-        value={disbursementRecords}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              disbursementId,
-              fafsaId,
-              paymentSchedule,
-              disbursementRecords: value,
-              bankingDetails,
-            };
-            const result = onChange(modelFields);
-            value = result?.disbursementRecords ?? value;
-          }
-          if (errors.disbursementRecords?.hasError) {
-            runValidationTasks("disbursementRecords", value);
-          }
-          setDisbursementRecords(value);
-        }}
-        onBlur={() =>
-          runValidationTasks("disbursementRecords", disbursementRecords)
-        }
-        errorMessage={errors.disbursementRecords?.errorMessage}
-        hasError={errors.disbursementRecords?.hasError}
-        {...getOverrideProps(overrides, "disbursementRecords")}
-      ></TextField>
-      <TextField
-        label="Banking details"
-        isRequired={false}
-        isReadOnly={false}
-        value={bankingDetails}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              disbursementId,
-              fafsaId,
-              paymentSchedule,
-              disbursementRecords,
-              bankingDetails: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.bankingDetails ?? value;
-          }
-          if (errors.bankingDetails?.hasError) {
-            runValidationTasks("bankingDetails", value);
-          }
-          setBankingDetails(value);
-        }}
-        onBlur={() => runValidationTasks("bankingDetails", bankingDetails)}
-        errorMessage={errors.bankingDetails?.errorMessage}
-        hasError={errors.bankingDetails?.hasError}
-        {...getOverrideProps(overrides, "bankingDetails")}
-      ></TextField>
-      <Flex
-        justifyContent="space-between"
-        {...getOverrideProps(overrides, "CTAFlex")}
-      >
-        <Button
-          children="Clear"
-          type="reset"
-          onClick={(event) => {
-            event.preventDefault();
-            resetStateValues();
+      {isSubmitting && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10,
           }}
-          {...getOverrideProps(overrides, "ClearButton")}
-        ></Button>
-        <Flex
-          gap="15px"
-          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
-          <Button
-            children="Submit"
-            type="submit"
-            variation="primary"
-            isDisabled={Object.values(errors).some((e) => e?.hasError)}
-            {...getOverrideProps(overrides, "SubmitButton")}
-          ></Button>
+          <span>Submitting...</span>
+        </div>
+      )}
+
+      <Grid
+        as="form"
+        rowGap="15px"
+        columnGap="15px"
+        padding="20px"
+        onSubmit={handleSubmit}
+        {...getOverrideProps(overrides, "DisbursementCreateForm")}
+        {...rest}
+      >
+        <TextField
+          label="Disbursement ID"
+          value={formValues.disbursementId}
+          onChange={handleChange("disbursementId")}
+          errorMessage={errors.disbursementId?.errorMessage}
+          hasError={errors.disbursementId?.hasError}
+        />
+        <TextField
+          label="FAFSA ID"
+          value={formValues.fafsaId}
+          onChange={handleChange("fafsaId")}
+          errorMessage={errors.fafsaId?.errorMessage}
+          hasError={errors.fafsaId?.hasError}
+        />
+        <TextField
+          label="Payment Schedule"
+          value={formValues.paymentSchedule}
+          onChange={handleChange("paymentSchedule")}
+          errorMessage={errors.paymentSchedule?.errorMessage}
+          hasError={errors.paymentSchedule?.hasError}
+        />
+        <TextField
+          label="Disbursement Records"
+          value={formValues.disbursementRecords}
+          onChange={handleChange("disbursementRecords")}
+          errorMessage={errors.disbursementRecords?.errorMessage}
+          hasError={errors.disbursementRecords?.hasError}
+        />
+        <TextField
+          label="Banking Details"
+          value={formValues.bankingDetails}
+          onChange={handleChange("bankingDetails")}
+          errorMessage={errors.bankingDetails?.errorMessage}
+          hasError={errors.bankingDetails?.hasError}
+        />
+        <Flex justifyContent="flex-end">
+          <Button type="submit" variation="primary">
+            Submit
+          </Button>
         </Flex>
-      </Flex>
-    </Grid>
+      </Grid>
+    </div>
   );
 }
