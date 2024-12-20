@@ -8,13 +8,40 @@ function App() {
       <main>
         <div>
           {/* Add a button to navigate to the form */}
-          <Link to="/FSA">
+          <Link to="/">
+            <button>Button 1</button>
+          </Link>
+        </div>
+        <div><Link to="/">
+            <button>Button 2</button>
+          </Link>
+          </div>
+          <div><Link to="/">
+            <button>Button 3</button>
+          </Link>
+          </div>
+          <div><Link to="/">
+            <button>Home</button>
+          </Link>
+          </div>
+          <div><Link to="/FSA">
             <button>Start Application</button>
           </Link>
+          </div>
+          <div>
+          </div>
+          <div>
+          </div>
+          <div>
+          <div>
+          </div>
+          <div>
+          
           <Link to="/Dashboard">
             <button>View Dashboard</button>
           </Link>
-        </div>
+          </div>
+          </div>
 
         {/* Define routes */}
         <Routes>
