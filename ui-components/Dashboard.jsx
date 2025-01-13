@@ -8,7 +8,6 @@ import {
   listSchoolEnrollments,
 } from "./graphql/queries";
 import "./dashboard.css"; // Import the CSS file
-import TopBar from "../src/TopBar"; // Import the TopBar component
 
 
 const client = generateClient();
