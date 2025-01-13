@@ -141,20 +141,7 @@ export default function CostAndAidCreateForm(props) {
         {...getOverrideProps(overrides, "CostAndAidCreateForm")}
         {...rest}
       >
-        <TextField
-          label="Cost Aid ID"
-          value={formValues.costAidId}
-          onChange={handleChange("costAidId")}
-          errorMessage={errors.costAidId?.errorMessage}
-          hasError={errors.costAidId?.hasError}
-        />
-        <TextField
-          label="FAFSA ID"
-          value={formValues.fafsaId}
-          onChange={handleChange("fafsaId")}
-          errorMessage={errors.fafsaId?.errorMessage}
-          hasError={errors.fafsaId?.hasError}
-        />
+        
         <TextField
           label="Cost of Attendance"
           type="number"
@@ -172,7 +159,7 @@ export default function CostAndAidCreateForm(props) {
         />
         <Flex justifyContent="flex-end">
           <Button type="submit" variation="primary">
-            Submit
+            Next
           </Button>
         </Flex>
       </Grid>

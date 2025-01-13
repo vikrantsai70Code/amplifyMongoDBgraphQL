@@ -152,13 +152,7 @@ export default function StudentsCreateForm(props) {
         {...getOverrideProps(overrides, "StudentsCreateForm")}
         {...rest}
       >
-        <TextField
-          label="Student ID"
-          value={formValues.studentId}
-          onChange={handleChange("studentId")}
-          errorMessage={errors.studentId?.errorMessage}
-          hasError={errors.studentId?.hasError}
-        />
+       
         <TextField
           label="First Name"
           value={formValues.firstName}
@@ -198,7 +192,7 @@ export default function StudentsCreateForm(props) {
         />
         <Flex justifyContent="flex-end">
           <Button type="submit" variation="primary">
-            Submit
+            Next
           </Button>
         </Flex>
       </Grid>

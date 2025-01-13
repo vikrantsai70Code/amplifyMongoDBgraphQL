@@ -141,20 +141,7 @@ export default function SchoolEnrollmentCreateForm(props) {
         {...getOverrideProps(overrides, "SchoolEnrollmentCreateForm")}
         {...rest}
       >
-        <TextField
-          label="Enrollment ID"
-          value={formValues.enrollmentId}
-          onChange={handleChange("enrollmentId")}
-          errorMessage={errors.enrollmentId?.errorMessage}
-          hasError={errors.enrollmentId?.hasError}
-        />
-        <TextField
-          label="FAFSA ID"
-          value={formValues.fafsaId}
-          onChange={handleChange("fafsaId")}
-          errorMessage={errors.fafsaId?.errorMessage}
-          hasError={errors.fafsaId?.hasError}
-        />
+       
         <TextField
           label="School Confirmation Status"
           value={formValues.schoolConfirmationStatus}
@@ -171,7 +158,7 @@ export default function SchoolEnrollmentCreateForm(props) {
         />
         <Flex justifyContent="flex-end">
           <Button type="submit" variation="primary">
-            Submit
+            Next
           </Button>
         </Flex>
       </Grid>

@@ -151,20 +151,7 @@ export default function FinancialInformationCreateForm(props) {
         {...getOverrideProps(overrides, "FinancialInformationCreateForm")}
         {...rest}
       >
-        <TextField
-          label="Financial Info ID"
-          value={formValues.financialInfoId}
-          onChange={handleChange("financialInfoId")}
-          errorMessage={errors.financialInfoId?.errorMessage}
-          hasError={errors.financialInfoId?.hasError}
-        />
-        <TextField
-          label="Student ID"
-          value={formValues.studentId}
-          onChange={handleChange("studentId")}
-          errorMessage={errors.studentId?.errorMessage}
-          hasError={errors.studentId?.hasError}
-        />
+        
         <TextField
           label="Taxable Income"
           type="number"
@@ -198,7 +185,7 @@ export default function FinancialInformationCreateForm(props) {
         />
         <Flex justifyContent="flex-end">
           <Button type="submit" variation="primary">
-            Submit
+            Next
           </Button>
         </Flex>
       </Grid>

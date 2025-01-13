@@ -143,20 +143,7 @@ export default function DisbursementCreateForm(props) {
         {...getOverrideProps(overrides, "DisbursementCreateForm")}
         {...rest}
       >
-        <TextField
-          label="Disbursement ID"
-          value={formValues.disbursementId}
-          onChange={handleChange("disbursementId")}
-          errorMessage={errors.disbursementId?.errorMessage}
-          hasError={errors.disbursementId?.hasError}
-        />
-        <TextField
-          label="FAFSA ID"
-          value={formValues.fafsaId}
-          onChange={handleChange("fafsaId")}
-          errorMessage={errors.fafsaId?.errorMessage}
-          hasError={errors.fafsaId?.hasError}
-        />
+        
         <TextField
           label="Payment Schedule"
           value={formValues.paymentSchedule}

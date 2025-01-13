@@ -1,7 +1,7 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 
 const schema = a.schema({
-  // Todo model
+  // Todo modela
   Todo: a
     .model({
       content: a.string(),

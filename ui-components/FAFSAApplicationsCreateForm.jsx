@@ -158,24 +158,7 @@ export default function FAFSAApplicationsCreateForm(props) {
         {...getOverrideProps(overrides, "FAFSAApplicationsCreateForm")}
         {...rest}
       >
-        <TextField
-          label="FAFSA ID"
-          value={formValues.fafsaId}
-          onChange={handleChange("fafsaId")}
-          onBlur={() => runValidationTasks("fafsaId", formValues.fafsaId)}
-          errorMessage={errors.fafsaId?.errorMessage}
-          hasError={errors.fafsaId?.hasError}
-          {...getOverrideProps(overrides, "fafsaId")}
-        />
-        <TextField
-          label="Student ID"
-          value={formValues.studentId}
-          onChange={handleChange("studentId")}
-          onBlur={() => runValidationTasks("studentId", formValues.studentId)}
-          errorMessage={errors.studentId?.errorMessage}
-          hasError={errors.studentId?.hasError}
-          {...getOverrideProps(overrides, "studentId")}
-        />
+        
         <TextField
           label="Application Date"
           type="date"
@@ -223,8 +206,8 @@ export default function FAFSAApplicationsCreateForm(props) {
             }}
           />
           <Button
-            children="Submit"
-            type="submit"
+            children="Next"
+            type="next"
             variation="primary"
             isDisabled={Object.values(errors).some((e) => e?.hasError)}
           />

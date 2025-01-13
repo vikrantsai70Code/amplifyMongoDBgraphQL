@@ -7,6 +7,9 @@ import {
   listDisbursements,
   listSchoolEnrollments,
 } from "./graphql/queries";
+import "./dashboard.css"; // Import the CSS file
+import TopBar from "../src/TopBar"; // Import the TopBar component
+
 
 const client = generateClient();
 
@@ -17,8 +20,7 @@ const Dashboard = () => {
   const [disbursements, setDisbursements] = useState([]);
   const [schoolEnrollments, setSchoolEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [expandedSection, setExpandedSection] = useState(null);
+  const [expandedSection, setExpandedSection] = useState("students");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,79 +49,68 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  const toggleSection = (section) => {
-    setExpandedSection(expandedSection === section ? null : section);
-  };
-
-  if (loading) return <div style={styles.loading}>Loading...</div>;
+  if (loading) return <div className="loading">Loading...</div>;
 
   return (
-    <div style={styles.container}>
-      {/* Page Header */}
-      <div style={styles.pageHeader}>
-        <h1>Financial Aid Dashboard</h1>
-      </div>
-
-      {/* Tiles for Expand/Collapse */}
-      <div style={styles.tilesContainer}>
+    <div className="dashboard-container">
+      {/* Sidebar Menu */}
+      <div className="sidebar">
         {[
-         
-          { title: "Cost & Aid", section: "costAid", count: costAndAid.length },
-          { title: "Disbursements", section: "disbursements", count: disbursements.length },
-          { title: "School Enrollments", section: "enrollments", count: schoolEnrollments.length },
-          { title: "Students", section: "students", count: students.length },
-          { title: "Applications", section: "fafsa", count: fafsaApplications.length },
-        ].map((tile) => (
+          { title: "Students", section: "students" },
+          { title: "Applications", section: "fafsa" },
+          { title: "Cost & Aid", section: "costAid" },
+          { title: "Disbursements", section: "disbursements" },
+          { title: "Enrollments", section: "enrollments" },
+        ].map((item) => (
           <div
-            key={tile.section}
-            style={styles.tile}
-            onClick={() => toggleSection(tile.section)}
+            key={item.section}
+            className={`menu-item ${expandedSection === item.section ? "active" : ""}`}
+            onClick={() => setExpandedSection(item.section)}
           >
-            <h3>{tile.title}</h3>
-            <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Total: {tile.count}</p>
+            {item.title}
           </div>
         ))}
       </div>
 
-      {/* Expandable Sections */}
-      {expandedSection === "students" && <DataTable title="Students" data={students} columns={studentColumns} />}
-      {expandedSection === "fafsa" && <DataTable title="FAFSA Applications" data={fafsaApplications} columns={fafsaColumns} />}
-      {expandedSection === "costAid" && <DataTable title="Cost & Aid" data={costAndAid} columns={costAidColumns} />}
-      {expandedSection === "disbursements" && (
-        <DataTable title="Disbursements" data={disbursements} columns={disbursementColumns} />
-      )}
-      {expandedSection === "enrollments" && (
-        <DataTable title="School Enrollments" data={schoolEnrollments} columns={enrollmentColumns} />
-      )}
+      {/* Main Content Section */}
+      <div className="main-content">
+        {expandedSection === "students" && <DataTable title="Students" data={students} columns={studentColumns} />}
+        {expandedSection === "fafsa" && <DataTable title="FAFSA Applications" data={fafsaApplications} columns={fafsaColumns} />}
+        {expandedSection === "costAid" && <DataTable title="Cost & Aid" data={costAndAid} columns={costAidColumns} />}
+        {expandedSection === "disbursements" && (
+          <DataTable title="Disbursements" data={disbursements} columns={disbursementColumns} />
+        )}
+        {expandedSection === "enrollments" && (
+          <DataTable title="School Enrollments" data={schoolEnrollments} columns={enrollmentColumns} />
+        )}
+      </div>
     </div>
   );
 };
 
 const DataTable = ({ title, data, columns }) => (
-  <div style={styles.tableSection}>
+  <div className="table-section">
     <h2>{title}</h2>
-    <table style={styles.table}>
-      <thead>
-        <tr>
-          {columns.map((col) => (
-            <th key={col.key} style={styles.tableHeader}>
-              {col.label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item, index) => (
-          <tr key={index} style={styles.tableRow}>
+    <div className="responsive-table-wrapper">
+      <table className="dashboard-table">
+        <thead>
+          <tr>
             {columns.map((col) => (
-              <td key={col.key} style={styles.tableCell}>
-                {item[col.key] || "N/A"}
-              </td>
+              <th key={col.key}>{col.label}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map((item, index) => (
+            <tr key={index}>
+              {columns.map((col) => (
+                <td key={col.key}>{item[col.key] || "N/A"}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   </div>
 );
 
@@ -155,70 +146,5 @@ const enrollmentColumns = [
   { label: "FAFSA ID", key: "fafsaId" },
   { label: "Confirmation Status", key: "schoolConfirmationStatus" },
 ];
-
-// Styles
-const styles = {
-  container: {
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#f9f9f9",
-    minHeight: "100vh",
-  },
-  pageHeader: {
-    textAlign: "center",
-    marginBottom: "20px",
-    paddingTop: "40px",
-  },
-  tilesContainer: {
-    display: "flex",
-    justifyContent: "space-around",
-    flexWrap: "wrap",
-    gap: "15px",
-    marginBottom: "20px",
-  },
-  tile: {
-    flex: "1 1 calc(30% - 10px)",
-    backgroundColor: "#e3f2fd",
-    color: "#333",
-    textAlign: "center",
-    borderRadius: "8px",
-    padding: "15px",
-    cursor: "pointer",
-    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-    transition: "transform 0.2s",
-  },
-  tileHovered: {
-    transform: "scale(1.05)",
-  },
-  tableSection: {
-    marginTop: "30px",
-    backgroundColor: "#fff",
-    borderRadius: "8px",
-    padding: "20px",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    textAlign: "center",
-  },
-  tableHeader: {
-    backgroundColor: "#4db6ac",
-    color: "#fff",
-    padding: "10px",
-  },
-  tableRow: {
-    borderBottom: "1px solid #ddd",
-  },
-  tableCell: {
-    padding: "10px",
-  },
-  loading: {
-    textAlign: "center",
-    fontSize: "1.5rem",
-    color: "#333",
-    marginTop: "50px",
-  },
-};
 
 export default Dashboard;
