@@ -7,7 +7,7 @@ import {
   listDisbursements,
   listSchoolEnrollments,
 } from "./graphql/queries";
-import "./dashboard.css"; // Import the CSS file
+import "./Dashboard.css"
 
 
 const client = generateClient();
