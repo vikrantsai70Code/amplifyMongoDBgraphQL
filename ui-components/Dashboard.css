@@ -10,8 +10,8 @@
 .top-bar {
   width: 100%;
   height: 50px;
-  background-color: #4a90e2;
-  color: white;
+  background-color: #e5e7eb; /* Light gray background */
+  color: #000000; /* Black text */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,10 +30,11 @@
 /* Sidebar */
 .sidebar {
   width: 220px;
-  background-color: #e3f2fd;
+  background-color: #e5e7eb; /* Light gray background */
   padding: 10px 0;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
+  color: #000000; /* Black text */
 }
 
 /* Sidebar menu items */
@@ -43,17 +44,18 @@
   border-radius: 8px;
   cursor: pointer;
   text-align: center;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .menu-item.active {
-  background-color: #4db6ac;
-  color: white;
+  background-color: #d1d5db; /* Slightly darker gray for active state */
+  color: #000000;
   font-weight: bold;
 }
 
 .menu-item:hover {
-  background-color: #c3e5f5;
+  background-color: #cbd5e1; /* Light blue-gray hover effect */
+  color: #000000;
 }
 
 /* Main content area */
@@ -65,7 +67,7 @@
   box-sizing: border-box;
 }
 
-/* Table section */
+/* Table section with title */
 .table-section {
   margin-top: 20px;
   background-color: #ffffff;
@@ -75,11 +77,21 @@
   overflow-x: auto;
 }
 
+.table-section h2 {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #374151;
+}
+
+/* Dashboard table */
 .dashboard-table {
   width: 100%;
   border-collapse: collapse;
   text-align: center;
   min-width: 800px;
+  font-size: 0.9rem;
+  color: #374151;
 }
 
 .dashboard-table th,
@@ -89,22 +101,27 @@
 }
 
 .dashboard-table th {
-  background-color: #007bff;
-  color: white;
+  background-color: #e5e7eb; /* Light gray for header */
+  color: #000000; /* Black text */
   font-weight: bold;
 }
 
 .dashboard-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-  
+  background-color: #f3f4f6; /* Light gray for alternating rows */
+}
+
+.dashboard-table tr:nth-child(odd) {
+  background-color: #ffffff; /* White for odd rows */
 }
 
 .dashboard-table tr:hover {
-  background-color: #e6f7ff;
+  background-color: #e6f7ff; /* Slight blue hover effect */
 }
 
+/* Loading message */
 .loading {
   font-size: 1.5rem;
   text-align: center;
   margin-top: 50px;
+  color: #4b5563;
 }
