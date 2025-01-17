@@ -125,3 +125,10 @@
   margin-top: 50px;
   color: #4b5563;
 }
+
+.record-count {
+  font-size: 0.9em;
+  color: gray;
+  margin-left: 5px;
+}
+

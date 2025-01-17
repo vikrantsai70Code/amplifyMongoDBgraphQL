@@ -55,19 +55,19 @@ const Dashboard = () => {
       {/* Sidebar Menu */}
       <div className="sidebar">
         {[
-          { title: "Students", section: "students" },
-          { title: "Applications", section: "fafsa" },
-          { title: "Cost & Aid", section: "costAid" },
-          { title: "Disbursements", section: "disbursements" },
-          { title: "Enrollments", section: "enrollments" },
+         { title: "Students", section: "students", count: students.length },
+         { title: "Applications", section: "fafsa", count: fafsaApplications.length },
+         { title: "Cost & Aid", section: "costAid", count: costAndAid.length },
+         { title: "Disbursements", section: "disbursements", count: disbursements.length },
+         { title: "Enrollments", section: "enrollments", count: schoolEnrollments.length },
         ].map((item) => (
           <div
-            key={item.section}
-            className={`menu-item ${expandedSection === item.section ? "active" : ""}`}
-            onClick={() => setExpandedSection(item.section)}
-          >
-            {item.title}
-          </div>
+          key={item.section}
+          className={`menu-item ${expandedSection === item.section ? "active" : ""}`}
+          onClick={() => setExpandedSection(item.section)}
+        >
+          {item.title} <span className="record-count">({item.count})</span>
+        </div>
         ))}
       </div>
 

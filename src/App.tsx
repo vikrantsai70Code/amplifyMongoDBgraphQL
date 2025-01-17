@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import FormWorkFlow from "./FormWorkFlow";
 import { Dashboard } from '../ui-components';
+import logo from './assets/logo.webp';
+
 
 // TopBar Component with typed props
 interface TopBarProps {
+  onShowProfile: () => void; // Explicitly typing onShowProfile as a function returning void
+}
+
+interface BottomBarProps {
   onShowProfile: () => void; // Explicitly typing onShowProfile as a function returning void
 }
 
@@ -26,9 +32,16 @@ function TopBar({ onShowProfile }: TopBarProps) {
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-        {/* Left Section: Title */}
-        <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-          Financial Aid <br /> Application System
+        {/* Left Section: Title and Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <img 
+            src={logo}
+            alt="Logo" 
+            style={{ height: '50px', width: '50px', objectFit: 'contain' }} 
+          />
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+            Financial Aid <br /> Application System
+          </div>
         </div>
 
         {/* Right Section: Menu Items */}
@@ -41,6 +54,40 @@ function TopBar({ onShowProfile }: TopBarProps) {
     </div>
   );
 }
+
+// BottomBar Component
+function BottomBar({ onShowProfile }: BottomBarProps) {
+  console.log(React.version);
+  return (
+    <div style={{
+      width: '100%',
+      backgroundColor: '#e5e7eb', /* Light gray */
+      color: '#000000',           /* Black text */
+      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+    }}>
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '10px 20px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+        {/* Left Section: Title */}
+        <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+        </div>
+
+        {/* Right Section: Menu Items */}
+        <div style={{ display: 'flex', gap: '20px', fontSize: '1rem' }}>
+          <Link to="/Dashboard" style={{ textDecoration: 'none', color: '#000000' }}>Dashboard</Link>
+          <Link to="/FSA" style={{ textDecoration: 'none', color: '#000000' }}>Create Application</Link>
+          <span style={{ cursor: 'pointer' }} onClick={onShowProfile}>User Profile</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 // Fake user data
 const fakeUser = {
@@ -84,7 +131,8 @@ function App() {
         </div>
 
         {/* Buttons section */}
-       
+        <BottomBar onShowProfile={() => setShowProfile(true)} />
+
         
       </main>
     </Router>
