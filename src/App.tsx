@@ -15,6 +15,7 @@ const fakeUser = {
 
 // TopBar Component with Icons
 function TopBar({ onShowProfile }: { onShowProfile: () => void }) {
+  console.log(React.version);
   return (
     <div
       style={{
